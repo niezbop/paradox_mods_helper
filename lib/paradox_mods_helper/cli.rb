@@ -21,6 +21,11 @@ command :discover do |c|
     discover_path = File.expand_path(args[0])
 
     if File.file?(discover_path)
+      if File.basename(discover_path) != 'descriptor.mod'
+        say "Not a descriptor.mod file: #{discover_path}"
+        exit(1)
+      end
+
       # Read file to ensure it's a valid descriptor
       ParadoxModsHelper::Descriptor.from_file(discover_path)
 
