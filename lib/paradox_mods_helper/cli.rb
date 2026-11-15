@@ -1,9 +1,5 @@
-#!/usr/bin/env ruby
-
-require 'rubygems'
 require 'commander/import'
 require 'terminal-table'
-require_relative 'paradox_mods_helper'
 
 program :name, 'paradox_mods_helper'
 program :version, ParadoxModsHelper::VERSION
