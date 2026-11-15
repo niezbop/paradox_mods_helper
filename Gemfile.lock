@@ -3,6 +3,7 @@ PATH
   specs:
     paradox_mods_helper (0.1.0)
       commander (~> 6.0.0)
+      terminal-table (~> 4.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -14,6 +15,11 @@ GEM
     io-console (0.9.5)
     reline (0.7.0)
       io-console (~> 0.5)
+    terminal-table (4.0.0)
+      unicode-display_width (>= 1.1.1, < 4)
+    unicode-display_width (3.3.0)
+      unicode-emoji (~> 4.3)
+    unicode-emoji (4.3.0)
 
 PLATFORMS
   arm64-darwin-23

@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency 'commander', '~> 6.0.0'
+  spec.add_dependency 'terminal-table', '~> 4.0.0'
 
   # spec.add_development_dependency
 

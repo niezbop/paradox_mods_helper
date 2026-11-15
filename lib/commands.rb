@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'commander/import'
+require 'terminal-table'
 require_relative 'paradox_mods_helper'
 
 program :name, 'paradox_mods_helper'
@@ -21,12 +22,18 @@ end
 
 command :list do |c|
   c.syntax = 'paradox_mods_helper list [options]'
-  c.summary = ''
+  c.summary = 'List all mods currently discovered'
   c.description = ''
-  c.example 'description', 'command example'
-  c.option '--some-switch', 'Some switch that does something'
   c.action do |args, options|
-    # Do something or c.when_called Paradox_mods_helper::Commands::List
+    registry = ParadoxModsHelper::Registry.load()
+
+    table = Terminal::Table.new(headings: %w[Identifier Name Path]) do |t|
+      registry.entries.each do |entry|
+        t << [entry[:identifier], entry[:name], entry[:path]]
+      end
+    end
+
+    puts table
   end
 end
 
