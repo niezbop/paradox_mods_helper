@@ -11,8 +11,12 @@ module ParadoxModsHelper
     FILE_PATH = File.join(DIRECTORY_PATH, 'local_mods.yml').freeze
     SERIALIZATION_KEY = :local_mods.freeze
 
-    def initialize(entries = [])
+    def initialize(entries = {})
       @entries = entries
+    end
+
+    def add(identifier, path)
+      @entries[identifier] = path
     end
 
     def self.exists?
@@ -22,7 +26,7 @@ module ParadoxModsHelper
     def self.setup
       return true if exists?
       FileUtils.mkdir_p(DIRECTORY_PATH)
-      new([]).write
+      new({}).write
     end
 
     def self.from_yaml(yaml)
@@ -30,6 +34,7 @@ module ParadoxModsHelper
     end
 
     def self.load
+      self.setup unless self.exists?
       return self.from_yaml(File.read(FILE_PATH))
     end
 

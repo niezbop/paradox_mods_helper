@@ -16,6 +16,27 @@ command :discover do |c|
   c.example 'description', 'command example'
   c.option '--some-switch', 'Some switch that does something'
   c.action do |args, options|
+    registry = ParadoxModsHelper::Registry.load
+    discover_path = File.expand_path(args[0])
+
+    if File.file?(discover_path)
+      # Read file to ensure it's a valid descriptor
+      ParadoxModsHelper::Descriptor.from_file(discover_path)
+
+      basename = File.basename(discover_path, File.extname(discover_path))
+
+      identifier = if basename == 'descriptor'
+                     File.basename(File.dirname(discover_path))
+                   else
+                     basename
+                   end
+
+      registry.add(identifier, discover_path)
+      registry.write()
+    else
+      say "No file at path: #{discover_path}"
+      exit(-1)
+    end
     # Do something or c.when_called Paradox_mods_helper::Commands::Discover
   end
 end
@@ -28,8 +49,10 @@ command :list do |c|
     registry = ParadoxModsHelper::Registry.load()
 
     table = Terminal::Table.new(headings: %w[Identifier Name Path]) do |t|
-      registry.entries.each do |entry|
-        t << [entry[:identifier], entry[:name], entry[:path]]
+      registry.entries.each do |identifier, path|
+        descriptor = ParadoxModsHelper::Descriptor.from_file(path)
+
+        t << [identifier, descriptor.name, path]
       end
     end
 
