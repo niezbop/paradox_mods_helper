@@ -96,9 +96,44 @@ command :deploy do |c|
   c.summary = ''
   c.description = ''
   c.example 'description', 'command example'
-  c.option '--some-switch', 'Some switch that does something'
+  c.option '-t', '--target PATH', 'Target game mods directory to deploy into'
   c.action do |args, options|
-    # Do something or c.when_called Paradox_mods_helper::Commands::Deploy
+    if options.target.nil?
+      say 'deploy requires --target PATH'
+      exit(1)
+    end
+
+    registry = ParadoxModsHelper::Registry.load
+    target = File.expand_path(options.target)
+    identifiers = args.empty? ? registry.entries.keys : args
+
+    FileUtils.mkdir_p(target)
+
+    identifiers.each do |identifier|
+      descriptor_path = registry.entries[identifier]
+
+      if descriptor_path.nil?
+        say "Skipping #{identifier}: not in registry"
+        next
+      end
+
+      begin
+        content_path = File.dirname(descriptor_path)
+        raw = File.read(descriptor_path)
+
+        deployed = if raw.match?(/path=".+"/)
+                     raw.gsub(/path=".+"/, %Q{path="#{content_path}"})
+                   else
+                     base = raw.end_with?("\n") ? raw : "#{raw}\n"
+                     "#{base}path=\"#{content_path}\"\n"
+                   end
+
+        File.write(File.join(target, "#{identifier}.mod"), deployed)
+        say "Deployed #{identifier} to #{target}"
+      rescue StandardError => e
+        say "Deploy failed for #{identifier}: #{e.message}"
+      end
+    end
   end
 end
 
