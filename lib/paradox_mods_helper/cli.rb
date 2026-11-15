@@ -146,9 +146,45 @@ command :clean do |c|
   c.summary = ''
   c.description = ''
   c.example 'description', 'command example'
-  c.option '--some-switch', 'Some switch that does something'
+  c.option '--target PATH', 'Target mod directory to clean'
   c.action do |args, options|
-    # Do something or c.when_called Paradox_mods_helper::Commands::Clean
+    if options.target.nil?
+      target = ParadoxModsHelper::Target.find(Dir.pwd)
+      if target.nil?
+        say "no valid .paradox-mods-target found in #{Dir.pwd} or its parents — create one at your modding root containing the target mod directory path, or pass --target PATH"
+        exit(1)
+      end
+    else
+      target = File.expand_path(options.target)
+    end
+
+    registry = ParadoxModsHelper::Registry.load
+    identifiers = args.empty? ? registry.entries.keys : args
+
+    identifiers.each do |identifier|
+      descriptor_path = File.join(target, "#{identifier}.mod")
+      stale_folder = File.join(target, identifier)
+
+      begin
+        removed = false
+
+        if File.file?(descriptor_path)
+          File.delete(descriptor_path)
+          say "Removed #{descriptor_path}"
+          removed = true
+        end
+
+        if File.directory?(stale_folder)
+          FileUtils.rm_rf(stale_folder)
+          say "Removed #{stale_folder}"
+          removed = true
+        end
+
+        say "Nothing to clean for #{identifier}" unless removed
+      rescue StandardError => e
+        say "Clean failed for #{identifier}: #{e.message}"
+      end
+    end
   end
 end
 
