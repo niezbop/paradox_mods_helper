@@ -12,21 +12,26 @@ module ParadoxModsHelper
 
         i = 0
         while i < lines.count do
-          line = lines[i]
-          k,v = line.strip.split('=', 2)
+          line = lines[i].strip
+          i += 1
+          next if line.empty? || line.start_with?('#')
+
+          k, v = line.split('=', 2)
+          next if v.nil?
+
           if v.start_with?('{')
             v = []
             loop do
-              i += 1
-              break if lines[i].include?('}')
+              break if i >= lines.count || lines[i].include?('}')
               v << sanitize_value(lines[i].strip)
+              i += 1
             end
+            i += 1 if i < lines.count
           else
             v = sanitize_value(v)
           end
 
           attributes[k] = v
-          i += 1
         end
 
         return Descriptor.new(attributes)
