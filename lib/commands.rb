@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'commander/import'
+require_relative 'paradox_mods_helper'
 
 program :name, 'paradox_mods_helper'
 program :version, ParadoxModsHelper::VERSION
