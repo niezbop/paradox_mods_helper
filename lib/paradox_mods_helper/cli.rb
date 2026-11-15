@@ -40,6 +40,34 @@ command :discover do |c|
       ParadoxModsHelper::Descriptor.from_file(descriptor_path)
 
       registry.add(File.basename(discover_path), descriptor_path)
+    elsif File.directory?(discover_path)
+      seen = {}
+
+      Dir[File.join(discover_path, '*', '*.mod')].sort.each do |descriptor_path|
+        # Skip subdirectories that are symlinks (e.g. Local_Mods -> game mod folder)
+        next if File.symlink?(File.dirname(descriptor_path))
+
+        name = File.basename(descriptor_path, '.mod')
+        next if name == 'descriptor'
+
+        content_path = File.join(File.dirname(descriptor_path), name)
+
+        unless File.directory?(content_path)
+          say "skipping #{descriptor_path}: no content directory at #{content_path}"
+          next
+        end
+
+        if seen.key?(name)
+          say "skipping #{descriptor_path}: mod name #{name} already found at #{seen[name]}"
+          next
+        end
+
+        # Read file to ensure it's a valid descriptor
+        ParadoxModsHelper::Descriptor.from_file(descriptor_path)
+
+        seen[name] = descriptor_path
+        registry.add(name, descriptor_path)
+      end
     else
       say "No file at path: #{discover_path}"
       exit(-1)
