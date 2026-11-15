@@ -12,6 +12,11 @@ command :discover do |c|
   c.example 'description', 'command example'
   c.option '--some-switch', 'Some switch that does something'
   c.action do |args, options|
+    if args.empty?
+      say 'discover requires a PATH argument'
+      exit(1)
+    end
+
     registry = ParadoxModsHelper::Registry.load
     discover_path = File.expand_path(args[0])
 
