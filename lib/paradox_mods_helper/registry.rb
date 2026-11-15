@@ -15,8 +15,13 @@ module ParadoxModsHelper
       @entries = entries
     end
 
-    def add(identifier, path)
+    def add(identifier, path, overwrite: false)
+      existing = @entries[identifier]
+      return :unchanged if existing == path
+      return :conflict if existing && !overwrite
+
       @entries[identifier] = path
+      return existing ? :replaced : :added
     end
 
     def self.exists?
