@@ -24,13 +24,7 @@ command :discover do |c|
       # Read file to ensure it's a valid descriptor
       ParadoxModsHelper::Descriptor.from_file(discover_path)
 
-      basename = File.basename(discover_path, File.extname(discover_path))
-
-      identifier = if basename == 'descriptor'
-                     File.basename(File.dirname(discover_path))
-                   else
-                     basename
-                   end
+      identifier = File.basename(File.dirname(discover_path))
 
       existing = registry.entries[identifier]
       status = registry.add(identifier, discover_path, overwrite: true)
@@ -50,22 +44,14 @@ command :discover do |c|
         say "Repointing #{identifier}: #{existing} → #{descriptor_path}"
       end
     elsif File.directory?(discover_path)
-      Dir[File.join(discover_path, '*', '*.mod')].sort.each do |descriptor_path|
-        # Skip subdirectories that are symlinks (e.g. Local_Mods -> game mod folder)
+      Dir[File.join(discover_path, '*', 'descriptor.mod')].sort.each do |descriptor_path|
+        # Skip subdirectories that are symlinks (e.g. a link pointing at a mod folder elsewhere)
         next if File.symlink?(File.dirname(descriptor_path))
-
-        name = File.basename(descriptor_path, '.mod')
-        next if name == 'descriptor'
-
-        content_path = File.join(File.dirname(descriptor_path), name)
-
-        unless File.directory?(content_path)
-          say "Skipping #{descriptor_path}: no content directory at #{content_path}"
-          next
-        end
 
         # Read file to ensure it's a valid descriptor
         ParadoxModsHelper::Descriptor.from_file(descriptor_path)
+
+        name = File.basename(File.dirname(descriptor_path))
 
         status = registry.add(name, descriptor_path)
         if status == :conflict
