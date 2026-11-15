@@ -33,12 +33,19 @@ command :discover do |c|
                    end
 
       registry.add(identifier, discover_path)
-      registry.write()
+    elsif File.directory?(discover_path) && File.file?(File.join(discover_path, 'descriptor.mod'))
+      descriptor_path = File.join(discover_path, 'descriptor.mod')
+
+      # Read file to ensure it's a valid descriptor
+      ParadoxModsHelper::Descriptor.from_file(descriptor_path)
+
+      registry.add(File.basename(discover_path), descriptor_path)
     else
       say "No file at path: #{discover_path}"
       exit(-1)
     end
-    # Do something or c.when_called Paradox_mods_helper::Commands::Discover
+
+    registry.write
   end
 end
 
