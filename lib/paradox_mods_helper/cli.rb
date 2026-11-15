@@ -1,7 +1,7 @@
 require 'commander/import'
 require 'terminal-table'
 
-program :name, 'paradox_mods_helper'
+program :name, File.basename($PROGRAM_NAME)
 program :version, ParadoxModsHelper::VERSION
 program :description, 'TODO'
 
