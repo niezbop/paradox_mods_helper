@@ -99,12 +99,16 @@ command :deploy do |c|
   c.option '-t', '--target PATH', 'Target game mods directory to deploy into'
   c.action do |args, options|
     if options.target.nil?
-      say 'deploy requires --target PATH'
-      exit(1)
+      target = ParadoxModsHelper::Target.find(Dir.pwd)
+      if target.nil?
+        say "no valid .paradox-mods-target found in #{Dir.pwd} or its parents — create one at your modding root containing the target mod directory path, or pass --target PATH"
+        exit(1)
+      end
+    else
+      target = File.expand_path(options.target)
     end
 
     registry = ParadoxModsHelper::Registry.load
-    target = File.expand_path(options.target)
     identifiers = args.empty? ? registry.entries.keys : args
 
     FileUtils.mkdir_p(target)
