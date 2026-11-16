@@ -73,7 +73,7 @@ command :discover do |c|
   end
 end
 
-LIST_HEADING = %w[Identifier Name Version Path].map(&:bold)
+LIST_HEADING = %w[Identifier Name Version].map(&:bold)
 command :list do |c|
   c.syntax = 'paradox_mods_helper list [options]'
   c.summary = 'List all mods currently discovered'
@@ -85,7 +85,7 @@ command :list do |c|
       registry.entries.each do |identifier, path|
         descriptor = ParadoxModsHelper::Descriptor.from_file(path)
 
-        t << [identifier, descriptor.name, descriptor.version, path]
+        t << [identifier, descriptor.name, descriptor.version]
       end
     end
 
