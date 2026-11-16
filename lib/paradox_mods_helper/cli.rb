@@ -100,15 +100,7 @@ command :deploy do |c|
   c.example 'description', 'command example'
   c.option '-t', '--target PATH', 'Target game mods directory to deploy into'
   c.action do |args, options|
-    if options.target.nil?
-      target = ParadoxModsHelper::Target.find(Dir.pwd)
-      if target.nil?
-        say "no valid .paradox-mods-target found in #{Dir.pwd} or its parents — create one at your modding root containing the target mod directory path, or pass --target PATH"
-        exit(1)
-      end
-    else
-      target = File.expand_path(options.target)
-    end
+    target = ParadoxModsHelper::Target.resolve(options.target)
 
     registry = ParadoxModsHelper::Registry.load
     identifiers = args.empty? ? registry.entries.keys : args
@@ -150,15 +142,7 @@ command :clean do |c|
   c.example 'description', 'command example'
   c.option '--target PATH', 'Target mod directory to clean'
   c.action do |args, options|
-    if options.target.nil?
-      target = ParadoxModsHelper::Target.find(Dir.pwd)
-      if target.nil?
-        say "no valid .paradox-mods-target found in #{Dir.pwd} or its parents — create one at your modding root containing the target mod directory path, or pass --target PATH"
-        exit(1)
-      end
-    else
-      target = File.expand_path(options.target)
-    end
+    target = ParadoxModsHelper::Target.resolve(options.target)
 
     registry = ParadoxModsHelper::Registry.load
     identifiers = args.empty? ? registry.entries.keys : args
