@@ -1,3 +1,4 @@
+require 'colored2'
 require 'commander/import'
 require 'terminal-table'
 
@@ -72,6 +73,7 @@ command :discover do |c|
   end
 end
 
+LIST_HEADING = %w[Identifier Name Path].map(&:bold)
 command :list do |c|
   c.syntax = 'paradox_mods_helper list [options]'
   c.summary = 'List all mods currently discovered'
@@ -79,7 +81,7 @@ command :list do |c|
   c.action do |args, options|
     registry = ParadoxModsHelper::Registry.load()
 
-    table = Terminal::Table.new(headings: %w[Identifier Name Path]) do |t|
+    table = Terminal::Table.new(headings: LIST_HEADING) do |t|
       registry.entries.each do |identifier, path|
         descriptor = ParadoxModsHelper::Descriptor.from_file(path)
 
