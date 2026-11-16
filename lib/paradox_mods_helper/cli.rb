@@ -190,3 +190,4 @@ command :clean do |c|
   end
 end
 
+default_command :help
