@@ -82,7 +82,7 @@ command :list do |c|
     registry = ParadoxModsHelper::Registry.load()
 
     table = Terminal::Table.new(headings: LIST_HEADING) do |t|
-      registry.entries.each do |identifier, path|
+      registry.entries.sort_by(&:first).each do |identifier, path|
         descriptor = ParadoxModsHelper::Descriptor.from_file(path)
 
         t << [identifier, descriptor.name, descriptor.version]
