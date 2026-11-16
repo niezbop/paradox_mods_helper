@@ -34,6 +34,8 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency 'commander', '~> 6.0.0'
   spec.add_dependency 'terminal-table', '~> 4.0.0'
+  spec.add_dependency 'colored2', '~> 4.1.0'
+  spec.add_dependency 'stringio', '~> 3.2.0' # Specify transitive dependency to prevent soft conflict
 
   # spec.add_development_dependency
 

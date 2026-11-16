@@ -2,12 +2,15 @@ PATH
   remote: .
   specs:
     paradox_mods_helper (0.1.0)
+      colored2 (~> 4.1.0)
       commander (~> 6.0.0)
+      stringio (~> 3.2.0)
       terminal-table (~> 4.0.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    colored2 (4.1.0)
     commander (6.0.0)
       highline (~> 3.1)
     highline (3.1.2)
@@ -15,6 +18,7 @@ GEM
     io-console (0.9.5)
     reline (0.7.0)
       io-console (~> 0.5)
+    stringio (3.2.0)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
     unicode-display_width (3.3.0)
