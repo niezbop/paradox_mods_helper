@@ -98,7 +98,7 @@ command :deploy do |c|
   c.summary = ''
   c.description = ''
   c.example 'description', 'command example'
-  c.option '-t', '--target PATH', 'Target game mods directory to deploy into'
+  c.option '-T', '--target PATH', 'Target game mods directory to deploy into'
   c.action do |args, options|
     target = ParadoxModsHelper::Target.resolve(options.target)
 
@@ -140,7 +140,7 @@ command :clean do |c|
   c.summary = ''
   c.description = ''
   c.example 'description', 'command example'
-  c.option '--target PATH', 'Target mod directory to clean'
+  c.option '-T', '--target PATH', 'Target mod directory to clean'
   c.action do |args, options|
     target = ParadoxModsHelper::Target.resolve(options.target)
 
